@@ -252,44 +252,6 @@ RIPPLE.questionType['heatmap'].session = function(){
 
     // _bind();
   }
-
-  // var _bind = function(){
-  //   // Resize Canvas on map resize
-  //   $('#response-resizer').on('click', function(){
-  //     // Only react if heatmap question
-  //     if( $('#type').val() !== 'heatmap') return;
-
-  //     // Resize canvas & reload data
-  //     heatmap.initMap();
-  //   });
-  // }
-
-  // var _reloadMap = function(){
-  //   var imgSrc = $('#'+params.heatURLID).val();
-  //   heatmap.params.imgSrc = imgSrc;    
-
-  //   // Remove Map
-  //   console.log("Canvas :: ",heatmap.params.mapObj.get("canvas"));
-  //   document.getElementById(heatmap.params.mapWrap).removeChild( heatmap.params.mapObj.get("canvas") );
-  //   heatmap.params.mapObj = {};
-
-  //   // Reinitilize Map
-  //   heatmap.createMap(imgSrc);
-  //   heatmap.params.mapObj = heatmapFactory.create(params.mapConfig);
-  //   heatmap.mapSize.set();
-    
-  //   // Reload Data
-  //   for (var i = ansObj.length - 1; i >= 0; i--) {
-  //     var currPoint = ansObj[i]
-  //       , x = heatmap.params.mapSize.width * currPoint[0]
-  //       , y = heatmap.params.mapSize.height * currPoint[1];
-    
-  //     console.log("Reload Point :: ", currPoint);
-  //     heatmap.params.mapObj.store.addDataPoint(x,y);
-  //   };
-    
-  // };
-
   var _resetObj = function(){
     // Reset ansObj
     heatmap.params.ansObj = [];
@@ -313,15 +275,7 @@ RIPPLE.questionType['heatmap'].session = function(){
     var imgURL = $("#"+params.heatURLID).val();
     heatmap.params.imgSrc = imgURL
     initMap();
-    
-    // // Wireup functionality of hotspot
-    // heatmap.params.mapObj = heatmapFactory.create(params.mapConfig);
-
-    // // Set Map Size
-    // var jMapWrap = $('#'+params.mapWrap);
-    // heatmap.mapSize.set([jMapWrap.width(), jMapWrap.height()]); 
-
-  }
+  };
 
   var recAns = function(clientID, name, answer){
     console.info("recAns args :: ",arguments);
@@ -450,68 +404,12 @@ RIPPLE.questionType['heatmap'].client = function(){
   var _wireupMap = function( questionObj ){
     // console.log("heatmap.client.displayFn args ::",arguments);
     heatmap.loadHeatmapJS(function(){
-      // var heatmap = RIPPLE.questionType['heatmap']
-      //   , params = heatmap.params
-      //   , jMapWrap = $("#"+params.mapWrap);
-
-      // //
-      // console.log("Src :: ", imgSrc);
-      // _determineImageSize( imgSrc );
-      // // Create Parts
-      // createMap( imgSrc );
-
-      // // Configure Canvas Size
-      // dimensions = _dimensionsOfCanvas();
-      // jMapWrap.css({
-      //   'width':dimensions.width
-      // })
-
-      // // Wireup functionality of hotspot
-      // heatmap.params.mapObj = heatmapFactory.create(params.mapConfig);
-      
       initMap({
         completed: _bindClick
       });
-
     }); 
        
   };
-
-
-
-  // var _determineImageSize = function(imgSrc){
-  //   // Make in memory copy of image to avoid css issues
-  //   // console.log("Load Img dynamically");
-  //   var img = $('<img/>')
-  //     .attr("src", imgSrc)
-  //     .load(function(){
-  //       heatmap.mapSize.set(this.width, this.height);
-  //       img.remove();
-  //     });
-  // }
-
-  // var _dimensionsOfCanvas = function(){
-  //   var params = heatmap.params
-  //     , rippleImgWidth = params.mapSize.width
-  //     , rippleImgHeight = params.mapSize.height
-  //     , img = $("#"+params.mapID)
-  //     , imgActualWidth = ( rippleImgWidth !== 0 ) ? rippleImgWidth : img.width()
-  //     , imgActualHeight = ( rippleImgHeight !== 0 ) ? rippleImgHeight : img.height()
-  //     , parentDiv = $('#answer')
-  //     , parentWidth = parentDiv.width()
-  //     , parentHeight = parentDiv.height();
-
-  //   // Set Params
-  //   heatmap.mapSize.set([imgActualWidth, imgActualHeight])
-
-  //   var w = (parentWidth < imgActualWidth ) ? parentWidth : imgActualWidth;
-  //   // Reduce for scroll portion
-  //   w = w * 0.8;
-  //   console.log("Calc width ::",imgActualWidth)
-  //   return {
-  //     width: w
-  //   }
-  // };
 
   var _mapClick = function(e, elem){
     var params = heatmap.params
