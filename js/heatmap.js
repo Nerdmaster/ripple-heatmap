@@ -214,6 +214,12 @@ RIPPLE.questionType['heatmap'] = {
         }
       });    
     }
+  },
+
+  resetObj: function(){
+    // Reset ansObj
+    RIPPLE.questionType['heatmap'].params.ansObj = [];
+    RIPPLE.questionType['heatmap'].params.mapObj = {};
   }
 
 };
@@ -232,7 +238,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   var display = function (){
     var sendBtn = $('#send-btn');
     displayReset();
-    _resetObj();
+    heatmap.resetObj();
 
     // Create qOption for url
     var outputOptions = DISPLAY.createTxtInput(params.heatURLID, "Image URL");
@@ -251,12 +257,7 @@ RIPPLE.questionType['heatmap'].session = function(){
     });
 
     // _bind();
-  }
-  var _resetObj = function(){
-    // Reset ansObj
-    heatmap.params.ansObj = [];
-    heatmap.params.mapObj = {};
-  }
+  };
 
   var fillOptions = function(qArray){
     if(qArray != null 
@@ -269,7 +270,7 @@ RIPPLE.questionType['heatmap'].session = function(){
 
   var send = function(){
     displayReset();
-    _resetObj();
+    heatmap.resetObj();
     
     // Create Heatmap
     var imgURL = $("#"+params.heatURLID).val();
@@ -307,7 +308,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   };
 
   var clearAnsVals = function(){
-    _resetObj();
+    heatmap.resetObj();
   };
 
   var displayReset = function(){
@@ -373,9 +374,8 @@ RIPPLE.questionType['heatmap'].client = function(){
     console.log("heatmap.client.displayFn args ::",arguments);
 
     // Set heatmap initial params
-    _clearClickData(); 
+    heatmap.resetObj();
     heatmap.params.imgSrc = questionObj.qOptions[0]["value"]
-    heatmap.params.mapObj = {};
     heatmap.params.questionObj = questionObj;
 
     // Add instructions
@@ -385,10 +385,6 @@ RIPPLE.questionType['heatmap'].client = function(){
     html += "<div id='" + heatmap.params.mapWrap + "' style='position:relative;'></div><br />";
     CC.showAnswer(html);
     _wireupMap(questionObj);
-  };
-
-  var _clearClickData = function(){
-    click = {x:0,y:0};
   };
 
   var _bindClick = function(){
