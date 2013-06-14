@@ -7,12 +7,15 @@ There is no configuration for this plugin.
 
 Install
 -------
+In "plugins" directory of Ripple core:
 
 ```
 git clone https://github.com/uoregon-img/ripple-heatmap.git heatmap
 ```
 
+
 OR
+
 
 [Download project](https://github.com/uoregon-img/ripple-heatmap/archive/master.zip) and install unzipped files in "plugins" directory of Ripple core.
 
