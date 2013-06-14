@@ -127,10 +127,10 @@ RIPPLE.questionType['heatmap'] = {
     console.log("Image Size :: ", heatmap.params.imgSize.width );
     
     // Check for img size
-    if( !imgDefined ) {
+    if( !imgDefined() ) {
       // Poll for change
       var timer = setInterval( function(){
-        if(imgDefined) clearInterval(timer);
+        if( imgDefined() ) clearInterval(timer);
         setSize(callback);
       }, 100);
     } else setSize(callback);
