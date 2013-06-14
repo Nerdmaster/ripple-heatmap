@@ -1,0 +1,10 @@
+{
+  "author": "William Myers",
+  "title": "Heatmap Question Type",
+  "description": "Plugin adds a new question type of heatmap",
+  "name": "heatmap",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+  }
+}
