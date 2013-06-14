@@ -14,7 +14,7 @@ git clone https://github.com/uoregon-img/ripple-heatmap.git heatmap
 
 OR
 
-[Download project](https://github.com/uoregon-img/node-plugin-manager/archive/dev.zip) and install unzipped files in plugin directory of Ripple core.
+[Download project](https://github.com/uoregon-img/ripple-heatmap/archive/master.zip) and install unzipped files in plugin directory of Ripple core.
 
 License
 -------
