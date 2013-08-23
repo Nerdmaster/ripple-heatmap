@@ -1,7 +1,7 @@
 RIPPLE.questionType['heatmap'] = {
   params: {
     ansObj:[],
-    heatURLID:"heatmap-url",
+    heatURLID:"url",
     mapID: "heatmap-img",
     mapWrap: "heatmap-answer",
     mapConfig: {
@@ -263,7 +263,7 @@ RIPPLE.questionType['heatmap'].session = function(){
     if(qArray != null 
       && qArray.hasOwnProperty('qOptions')  
       && qArray.qOptions.hasOwnProperty('url') ){
-        $('#heatmap-url').val( qArray.qOptions.url );
+        $('#url').val( qArray.qOptions.url );
     }
     
   };
