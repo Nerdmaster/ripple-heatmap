@@ -373,6 +373,7 @@ RIPPLE.questionType['heatmap'].client = function(){
     , initMap = heatmap.initMap
     , click = {}
     , sendBtn = $('#send-button')
+    , sent = false
     , timer = 0;
 
   var display = function( questionObj ){
@@ -387,7 +388,7 @@ RIPPLE.questionType['heatmap'].client = function(){
     var html = "<div class='well well-small'>Click on the image to indicate a location.</div>";
 
     // Add wrapper
-    html += "<div id='" + heatmap.params.mapWrap + "' style='position:relative;'></div><br />";
+    html += "<div id='" + heatmap.params.mapWrap + "' style='position:relative;' tabindex='-1'></div><br />";
     CC.showAnswer(html);
     _wireupMap(questionObj);
   };
@@ -397,7 +398,15 @@ RIPPLE.questionType['heatmap'].client = function(){
     // console.log(heatmap.params.mapObj.get("canvas"));
     heatmap.params.mapObj.get("canvas").onclick = function(e){
       _mapClick(e, this);
+      $('#'+heatmap.params.mapWrap).focus();
     }        
+
+    // Wire-up keypress enter
+    $('body').on('keypress', '#'+heatmap.params.mapWrap, function(e){
+      console.log(e.currentTarget);
+      if( sent || !isKeypressEnter(e) ) return;
+      sendBtn.click();
+    })
 
     sendBtn.show();    
   };
@@ -445,6 +454,7 @@ RIPPLE.questionType['heatmap'].client = function(){
     data.qID = heatmap.params.questionObj.qID;
     now.distributeAnswer( data );
     sendBtn.hide();
+    sent = true;
   };
 
   var valid = function(){
