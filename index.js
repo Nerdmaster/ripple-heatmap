@@ -22,24 +22,28 @@ var _createQType = function(err, exists){
 
   log("Exists", exists);
   if( exists ) return true;
-  else 
+  else {
     api.questionType.create(qTypeHM, function(err, saved){
       if( err ) api.logger.error(err);
-      else log("Create Question Type", saved, util.inspect(qTypeHM) );
+      else log("Create Question Type", saved.title );
     });
+  }
 
 }
+// Plugin Directory Name
+var pluginDirName = __dirname.match(/([^\/]*)\/*$/)[1];
 
 var qTypeHM = {
   name:pluginName,
   title: "Heatmap",
   shortTitle: "HM",
   icon: "icon-fire",
-  js: "/plugins/heatmap/js/heatmap.js"
+  js: "/plugins/"+ pluginDirName+"/js/heatmap.js"
 }
 HM.disable = function() {
   console.log("Disabled Heatmap");
   api.questionType.remove(pluginName, function(err, removed){
+    console.log("Removed",removed);
     if( err || !removed) api.logger.error(err);
     else log("Remove Question Type",pluginName);
   })

@@ -15,7 +15,7 @@ RIPPLE.questionType['heatmap'] = {
       height:0
     },
     imgObj:{},
-    imgSrc:null,
+    imgSrc:false,
     imgLoaded: false,
     imgSize:{
       width:0,
@@ -195,6 +195,7 @@ RIPPLE.questionType['heatmap'] = {
   }(),
 
   loadHeatmapJS: function(callback){
+    console.log( GLOBALS.questionTypes['heatmap'].js )
     // Check to see if script has already been loaded
     if( RIPPLE.questionType['heatmap'].params.scriptLoaded === true ) {
       callback();
@@ -203,14 +204,18 @@ RIPPLE.questionType['heatmap'] = {
       RIPPLE.questionType['heatmap'].params.scriptLoaded = true;
     }
     else {
+      // Find base of url
+      var heatmapURL = GLOBALS.questionTypes['heatmap'].js
+        , baseURL = heatmapURL.substring(0, heatmapURL.lastIndexOf('/')) + '/';
+
       $.ajax({
-        url:"/plugins/heatmap/js/jquery.heatmap.js", 
+        url: baseURL + 'jquery.heatmap.js', 
         dataType: "script",
         success: function(){
           callback();
         },
         error: function(jqXHR, textStatus, errorThrown){
-          $jGrowl("Unable to load script. ERROR :: " + errorThrown);
+          $.jGrowl("Unable to load script. ERROR :: " + RIPPLE.questionType['heatmap'].params.js);
         }
       });    
     }
@@ -371,7 +376,7 @@ RIPPLE.questionType['heatmap'].client = function(){
     , timer = 0;
 
   var display = function( questionObj ){
-    console.log("heatmap.client.displayFn args ::",arguments);
+    //console.log("heatmap.client.displayFn args ::",arguments);
 
     // Set heatmap initial params
     heatmap.resetObj();
