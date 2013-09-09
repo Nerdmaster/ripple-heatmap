@@ -83,10 +83,10 @@ RIPPLE.questionType['heatmap'] = {
       if( hasData ) {
         for (var i = ansObj.length - 1; i >= 0; i--) {
           var currPoint = ansObj[i]
-            , x = heatmap.params.mapSize.width * currPoint[0]
-            , y = heatmap.params.mapSize.height * currPoint[1];
+            , x = parseInt(heatmap.params.mapSize.width * currPoint[0]).toFixed(0)
+            , y = parseInt(heatmap.params.mapSize.height * currPoint[1]).toFixed(0);
         
-          console.log("Reload Point :: ", currPoint);
+          // console.log("Reload Point :: ", x + " | ", y);
           heatmap.params.mapObj.store.addDataPoint(x,y);
         };
       }
@@ -124,7 +124,7 @@ RIPPLE.questionType['heatmap'] = {
     // Set Params
     // NOTE: firing early so need to pool for response
     //heatmap.mapSize.set([imgActualWidth, imgActualHeight])
-    console.log("Image Size :: ", heatmap.params.imgSize.width );
+    // console.log("Image Size :: ", heatmap.params.imgSize.width );
     
     // Check for img size
     if( !imgDefined() ) {
@@ -195,7 +195,7 @@ RIPPLE.questionType['heatmap'] = {
   }(),
 
   loadHeatmapJS: function(callback){
-    console.log( GLOBALS.questionTypes['heatmap'].js )
+    // console.log( GLOBALS.questionTypes['heatmap'].js )
     // Check to see if script has already been loaded
     if( RIPPLE.questionType['heatmap'].params.scriptLoaded === true ) {
       callback();
@@ -284,7 +284,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   };
 
   var recAns = function(clientID, name, answer){
-    console.info("recAns args :: ",arguments);
+    // console.info("recAns args :: ",arguments);
     var total = ASC.params("total");
 
     // Increment Total
@@ -295,10 +295,11 @@ RIPPLE.questionType['heatmap'].session = function(){
     answer = JSON.parse(answer);
     // Convert Percentage to initial map
     // NOTE: Do not use current map dimensions because it will scale with size of mapWrap
-    console.log(heatmap.params.mapSize);
-    var x = heatmap.params.mapSize.width * answer.x;
-    var y = heatmap.params.mapSize.height * answer.y;
-    console.log("Calculated Point :: ", x, y);
+    // console.log(heatmap.params.mapSize);
+    var x = parseInt(heatmap.params.mapSize.width * answer.x).toFixed(0);
+
+    var y = parseInt(heatmap.params.mapSize.height * answer.y).toFixed(0);
+    // console.log("Calculated Point :: ", x + " | ", y);
     RIPPLE.questionType['heatmap'].params.mapObj.store.addDataPoint(x,y);
 
     // Store Data
@@ -306,8 +307,8 @@ RIPPLE.questionType['heatmap'].session = function(){
 
     // Add to individual responses
     var answerArray = [
-      "X: " + x.toFixed(0) + "px ",
-      "Y: " + y.toFixed(0) + "px "
+      "X: " + x + "px ",
+      "Y: " + y + "px "
     ]
     DISPLAY.updateIndResp(name, answerArray);
   };
