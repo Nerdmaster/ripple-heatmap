@@ -22,7 +22,8 @@ RIPPLE.questionType['heatmap'] = {
       height:0,
     },
     scriptLoaded: false,
-    questionObj:{}
+    questionObj:{},
+    clear:false
   },
 
   createMap: function(callback){
@@ -225,6 +226,7 @@ RIPPLE.questionType['heatmap'] = {
     // Reset ansObj
     RIPPLE.questionType['heatmap'].params.ansObj = [];
     RIPPLE.questionType['heatmap'].params.mapObj = {};
+    RIPPLE.questionType['heatmap'].params.clear = false;
   }
 
 };
@@ -261,7 +263,14 @@ RIPPLE.questionType['heatmap'].session = function(){
       sendBtn.prop("disabled",false);
     });
 
-    // _bind();
+    _bind();
+  };
+
+  var _bind = function(){
+    $(window).resize(function() {
+      var notCleared = params.clear === false
+      if( $('#type').val() === 'heatmap' && notCleared ) heatmap.initMap();
+    });
   };
 
   var fillOptions = function(qArray){
@@ -315,6 +324,7 @@ RIPPLE.questionType['heatmap'].session = function(){
 
   var clearAnsVals = function(){
     heatmap.resetObj();
+    RIPPLE.questionType['heatmap'].params.clear = true;
   };
 
   var displayReset = function(){
