@@ -53,7 +53,7 @@ RIPPLE.questionType['heatmap'] = {
   },
 
   initMap: function(options){
-    console.log("initMap args :: ", arguments);
+    // console.log("initMap args :: ", arguments);
     var heatmap = RIPPLE.questionType['heatmap']
       , params = heatmap.params;
 
@@ -62,7 +62,7 @@ RIPPLE.questionType['heatmap'] = {
     // Remove Map
     var hasMap = params.mapObj.length > 0;
     if( hasMap ){
-      console.log("Canvas :: ",params.mapObj.get("canvas"));
+      // console.log("Canvas :: ",params.mapObj.get("canvas"));
       document.getElementById(params.mapWrap).removeChild( params.mapObj.get("canvas") );
       params.mapObj = {};      
     } 
@@ -372,13 +372,19 @@ RIPPLE.questionType['heatmap'].client = function(){
     , heatmap = RIPPLE.questionType['heatmap']
     , createMap = heatmap.createMap
     , initMap = heatmap.initMap
-    , click = {}
     , sendBtn = $('#send-button')
-    , sent = false
-    , timer = 0;
+    , responseObj = {};
 
+  var _resetObj = function(){
+    responseObj.click = {}
+    responseObj.sent = false;
+    responseObj.timer = 0;
+  }
   var display = function( questionObj ){
     //console.log("heatmap.client.displayFn args ::",arguments);
+
+    // Set Initial Variables
+    _resetObj();
 
     // Set heatmap initial params
     heatmap.resetObj();
@@ -405,24 +411,30 @@ RIPPLE.questionType['heatmap'].client = function(){
     // Wire-up keypress enter
     $('body').on('keypress', '#'+heatmap.params.mapWrap, function(e){
       console.log(e.currentTarget);
-      if( sent || !isKeypressEnter(e) ) return;
+      if( responseObj.sent || !isKeypressEnter(e) ) return;
       sendBtn.click();
     })
 
     sendBtn.show();    
   };
 
-  var _wireupMap = function( questionObj ){
-    // console.log("heatmap.client.displayFn args ::",arguments);
+  var _wireupMap = function( questionObj, allowClick ){
+    console.log("heatmap.client.displayFn args ::",arguments);
+    // Default to clickable map
+    allowClick = ( allowClick === false ) ? false : true;
+
+    // Determine if map should be clickable and functioning or static
+    var initOptions = allowClick ? {completed: _bindClick} : {};
+
+    // Create map
     heatmap.loadHeatmapJS(function(){
-      initMap({
-        completed: _bindClick
-      });
+      initMap(initOptions);
     }); 
        
   };
 
   var _mapClick = function(e, elem){
+    if( responseObj.sent ) return;
     var params = heatmap.params
       , offset = $(elem).offset()
       , x = e.clientX - offset.left
@@ -435,12 +447,12 @@ RIPPLE.questionType['heatmap'].client = function(){
     params.ansObj = [];
 
     // Round to 4 decimals
-    click.x = xPercent.toFixed(4);
-    click.y = yPercent.toFixed(4); 
-    console.log("Click :: ", click);
+    responseObj.click.x = xPercent.toFixed(4);
+    responseObj.click.y = yPercent.toFixed(4); 
+    console.log("Click :: ", responseObj.click);
 
     // Set input values
-    params.ansObj.push([click.x, click.y]);
+    params.ansObj.push([responseObj.click.x, responseObj.click.y]);
 
     // Highlight Map
     params.mapObj.store.addDataPoint(x,y);    
@@ -449,13 +461,17 @@ RIPPLE.questionType['heatmap'].client = function(){
   var send = function(){
     var jMapWrap = $('#'+heatmap.params.mapWrap)
       , data = {}, stringifyData;
-    CC.answer = "A hotspot";
+    // Recreate map
+    mapHtml = "<div id='" + heatmap.params.mapWrap + "' style='position:relative;' tabindex='-1'></div><br />";
+    CC.answer = mapHtml;
+    _wireupMap({},false);
+
     // Compile Answer
-    data.answer = JSON.stringify(click)
+    data.answer = JSON.stringify(responseObj.click)
     data.qID = heatmap.params.questionObj.qID;
     now.distributeAnswer( data );
     sendBtn.hide();
-    sent = true;
+    responseObj.sent = true;
   };
 
   var valid = function(){
@@ -468,9 +484,9 @@ RIPPLE.questionType['heatmap'].client = function(){
   };
 
   var resize = function(){
-    if(timer != 0 ) clearTimeout(timer);
+    if(responseObj.timer != 0 ) clearTimeout(responseObj.timer);
 
-    timer = setTimeout(function(){
+    responseObj.timer = setTimeout(function(){
       _wireupMap();
     }, 100);
 
