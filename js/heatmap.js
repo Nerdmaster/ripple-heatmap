@@ -100,18 +100,19 @@ RIPPLE.questionType['heatmap'] = {
 
   },
 
-  firstMapLoad:function(){
+  showMap:function(){
     var heatmap = RIPPLE.questionType['heatmap']
       , params = heatmap.params;
-
     var imgURL = $("#"+params.heatURLID).val();
-    console.log("url length :: ", imgURL.length);
-    console.log("isLoaded :: ", params.loaded);
-    if( imgURL.length && !params.loaded){
-      params.imgSrc = imgURL
-      heatmap.initMap(); 
-      params.loaded = true;
-    }     
+    // Exit if already loaded
+    console.log( imgURL.length );
+    console.log( imgURL === params.imgSrc );
+    if( imgURL.length === 0 || imgURL == null || imgURL === params.imgSrc ) return;
+    // Set Flag
+    if(!params.loaded) params.loaded = true;
+    // Load Map
+    params.imgSrc = imgURL
+    heatmap.initMap();    
   },
 
   determineImageSize: function(){
@@ -238,12 +239,14 @@ RIPPLE.questionType['heatmap'] = {
   },
 
   resetObj: function(){
-    var heatmap = RIPPLE.questionType['heatmap'];
+    var heatmap = RIPPLE.questionType['heatmap']
+      , params = heatmap.params;
     // Reset ansObj
-    heatmap.params.ansObj = [];
-    heatmap.params.mapObj = {};
-    heatmap.params.clear = false;
-    heatmap.params.loaded = false;
+    params.ansObj = [];
+    params.mapObj = {};
+    params.imgSrc = false;
+    params.clear = false;
+    params.loaded = false;
   }
 
 };
@@ -257,8 +260,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   , ASC = RIPPLE.session.mainController
   , heatmap = RIPPLE.questionType['heatmap']
   , params = heatmap.params
-  , initMap = heatmap.initMap
-  , firstMapLoad = heatmap.firstMapLoad;
+  , showMap = heatmap.showMap;
 
   var display = function (){
     var sendBtn = $('#send-btn');
@@ -272,15 +274,15 @@ RIPPLE.questionType['heatmap'].session = function(){
     DISPLAY.returnOptions(outputOptions);
     
     // Create image div
-    var outputAns = "<div id='" + params.mapWrap + "' style='position:relative;min-height:350px'></div>";
+    var outputAns = "<div id='" + params.mapWrap + "' style='position:relative'></div>";
     DISPLAY.answers(outputAns);
 
     // Add heatmap js
     sendBtn.prop("disabled",true);
     heatmap.loadHeatmapJS(function(){
       sendBtn.prop("disabled",false);
-      // Load Map
-      firstMapLoad();
+      // Show Map
+      showMap();
     });
 
     _bind();
@@ -305,11 +307,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   var send = function(){
     displayReset();
     heatmap.resetObj();
-    
-    // Create Heatmap
-    var imgURL = $("#"+params.heatURLID).val();
-    heatmap.params.imgSrc = imgURL
-    initMap();
+    showMap();
   };
 
   var recAns = function(clientID, name, answer){
@@ -345,6 +343,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   var clearAnsVals = function(){
     heatmap.resetObj();
     RIPPLE.questionType['heatmap'].params.clear = true;
+    showMap();
   };
 
   var displayReset = function(){
@@ -353,6 +352,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   };
   
   var resizeAnswers = function(){
+    // By reinitializing it will properly resize
     heatmap.initMap();
   };
 
