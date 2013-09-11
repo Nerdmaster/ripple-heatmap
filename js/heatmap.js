@@ -14,6 +14,7 @@ RIPPLE.questionType['heatmap'] = {
       width:0,
       height:0
     },
+    loaded:false,
     imgObj:{},
     imgSrc:false,
     imgLoaded: false,
@@ -97,6 +98,20 @@ RIPPLE.questionType['heatmap'] = {
       if( hasCompletedFn ) options.completed();
     };
 
+  },
+
+  firstMapLoad:function(){
+    var heatmap = RIPPLE.questionType['heatmap']
+      , params = heatmap.params;
+
+    var imgURL = $("#"+params.heatURLID).val();
+    console.log("url length :: ", imgURL.length);
+    console.log("isLoaded :: ", params.loaded);
+    if( imgURL.length && !params.loaded){
+      params.imgSrc = imgURL
+      heatmap.initMap(); 
+      params.loaded = true;
+    }     
   },
 
   determineImageSize: function(){
@@ -223,10 +238,12 @@ RIPPLE.questionType['heatmap'] = {
   },
 
   resetObj: function(){
+    var heatmap = RIPPLE.questionType['heatmap'];
     // Reset ansObj
-    RIPPLE.questionType['heatmap'].params.ansObj = [];
-    RIPPLE.questionType['heatmap'].params.mapObj = {};
-    RIPPLE.questionType['heatmap'].params.clear = false;
+    heatmap.params.ansObj = [];
+    heatmap.params.mapObj = {};
+    heatmap.params.clear = false;
+    heatmap.params.loaded = false;
   }
 
 };
@@ -241,6 +258,7 @@ RIPPLE.questionType['heatmap'].session = function(){
   , heatmap = RIPPLE.questionType['heatmap']
   , params = heatmap.params
   , initMap = heatmap.initMap
+  , firstMapLoad = heatmap.firstMapLoad;
 
   var display = function (){
     var sendBtn = $('#send-btn');
@@ -254,13 +272,15 @@ RIPPLE.questionType['heatmap'].session = function(){
     DISPLAY.returnOptions(outputOptions);
     
     // Create image div
-    var outputAns = "<div id='" + params.mapWrap + "' style='position:relative'></div>";
+    var outputAns = "<div id='" + params.mapWrap + "' style='position:relative;min-height:350px'></div>";
     DISPLAY.answers(outputAns);
 
     // Add heatmap js
     sendBtn.prop("disabled",true);
     heatmap.loadHeatmapJS(function(){
       sendBtn.prop("disabled",false);
+      // Load Map
+      firstMapLoad();
     });
 
     _bind();
